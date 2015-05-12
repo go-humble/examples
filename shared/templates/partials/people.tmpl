@@ -1,0 +1,19 @@
+<div class="row">
+	<div class="col-lg-12">
+		<h2>All People ({{ len . }})</h2>
+		<table class="table">
+			<tr>
+				<th>Id</th>
+				<th>Name</th>
+				<th>Age</th>
+			</tr>
+			{{ range . }}
+			<tr>
+				<td><a href="/people/{{ .Id }}">{{ .Id }}</a></td>
+				<td>{{ .Name }}</td>
+				<td>{{ .Age }}</td>
+			</tr>
+			{{ end }}
+		</table>
+	</div>
+</div>
