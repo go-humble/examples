@@ -1,15 +1,13 @@
 package main
 
 import (
-	"fmt"
-	"github.com/albrow/temple"
+	"github.com/albrow/temple-example/controllers"
 	"github.com/albrow/temple-example/models"
 	_ "github.com/albrow/temple-example/templates"
 	"github.com/albrow/zoom"
 	"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
 	"log"
-	"net/http"
 )
 
 func init() {
@@ -30,11 +28,11 @@ func main() {
 			log.Fatal(err)
 		}
 	}()
+	people := controllers.People{}
 	router := mux.NewRouter()
-	router.HandleFunc("/people/{id}", ShowPerson).Methods("GET")
-	router.HandleFunc("/people", IndexPeople).Methods("GET")
+	router.HandleFunc("/people/{id}", people.Show).Methods("GET")
+	router.HandleFunc("/people", people.Index).Methods("GET")
 	n := negroni.Classic()
-	n.Use(negroni.NewStatic(http.Dir("../client")))
 	n.UseHandler(router)
 	n.Run(":3000")
 }
@@ -57,35 +55,4 @@ func CreateInitialPeople() error {
 		}
 	}
 	return nil
-}
-
-func IndexPeople(res http.ResponseWriter, req *http.Request) {
-	indexView, found := temple.Templates["people/index"]
-	if !found {
-		log.Fatalf("Could not find template named %s", "people/index")
-	}
-	fmt.Println(indexView.Template.Tree)
-	people := []*models.Person{}
-	if err := models.People.FindAll(&people); err != nil {
-		log.Fatal(err)
-	}
-	if err := indexView.Execute(res, people); err != nil {
-		log.Fatal(err)
-	}
-}
-
-func ShowPerson(res http.ResponseWriter, req *http.Request) {
-	showView, found := temple.Templates["people/show"]
-	if !found {
-		log.Fatalf("Could not find template named %s", "people/show")
-	}
-	vars := mux.Vars(req)
-	id := vars["id"]
-	person := &models.Person{}
-	if err := models.People.Find(id, person); err != nil {
-		log.Fatal(err)
-	}
-	if err := showView.Execute(res, person); err != nil {
-		log.Fatal(err)
-	}
 }

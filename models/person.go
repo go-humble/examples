@@ -18,10 +18,10 @@ type Person struct {
 	zoom.DefaultData
 }
 
-func (p *Person) GetId() string {
+func (p Person) GetId() string {
 	return p.Id()
 }
 
-func (p *Person) RootURL() string {
-	return "localhost:3000/persons"
+func (p Person) RootURL() string {
+	return "http://localhost:3000/people"
 }
