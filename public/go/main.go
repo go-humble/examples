@@ -15,6 +15,6 @@ func main() {
 	r := router.New()
 	r.HandleFunc("/people", peopleCtrl.Index)
 	r.HandleFunc("/people/{id}", peopleCtrl.Show)
-	r.InterceptLinks()
+	r.ShouldInterceptLinks = true
 	r.Start()
 }

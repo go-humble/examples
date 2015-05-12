@@ -15,11 +15,11 @@ func RegisterAll() error {
 type Person struct {
 	Name string
 	Age  int
-	zoom.DefaultData
+	zoom.RandomId
 }
 
 func (p Person) GetId() string {
-	return p.Id()
+	return p.Id
 }
 
 func (p Person) RootURL() string {
