@@ -14,12 +14,6 @@ import (
 //go:generate temple build ../shared/templates/templates ../shared/templates/templates.go --partials=../shared/templates/partials --layouts=../shared/templates/layouts
 
 func init() {
-	if err := models.RegisterAll(); err != nil {
-		log.Fatal(err)
-	}
-	if err := zoom.Init(nil); err != nil {
-		log.Fatal(err)
-	}
 	if err := CreateInitialPeople(); err != nil {
 		log.Fatal(err)
 	}
