@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"github.com/go-humble/examples/people/shared/models"
-	_ "github.com/go-humble/examples/people/shared/templates"
+	"github.com/go-humble/examples/people/shared/templates"
 	"github.com/go-humble/rest"
-	"github.com/go-humble/temple"
+	"github.com/go-humble/temple/temple"
 	"honnef.co/go/js/dom"
 	"log"
 )
@@ -17,11 +17,11 @@ var (
 
 func init() {
 	var found bool
-	peopleTmpl, found = temple.Partials["people"]
+	peopleTmpl, found = templates.Partials["people"]
 	if !found {
 		log.Fatal("Could not find people partial")
 	}
-	personTmpl, found = temple.Partials["person"]
+	personTmpl, found = templates.Partials["person"]
 	if !found {
 		log.Fatal("Could not find person partial")
 	}

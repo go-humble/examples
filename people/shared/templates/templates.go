@@ -4,20 +4,27 @@ package templates
 // Do not edit manually!
 
 import (
-	"github.com/go-humble/temple"
+	"github.com/go-humble/temple/temple"
+)
+
+var (
+	Templates map[string]temple.Template
+	Partials  map[string]temple.Partial
+	Layouts   map[string]temple.Layout
 )
 
 func init() {
 	var err error
+	g := temple.NewGroup()
 
-	if err = temple.AddPartial("head", `<head>
+	if err = g.AddPartial("head", `<head>
 	<title>Temple Testing</title>	
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">	
 </head>`); err != nil {
 		panic(err)
 	}
 
-	if err = temple.AddPartial("people", `<div class="row">
+	if err = g.AddPartial("people", `<div class="row">
 	<div class="col-lg-12">
 		<h2>All People ({{ len . }})</h2>
 		<table class="table">
@@ -40,7 +47,7 @@ func init() {
 		panic(err)
 	}
 
-	if err = temple.AddPartial("person", `<h2>Person</h2>
+	if err = g.AddPartial("person", `<h2>Person</h2>
 <div class="panel panel-default">
 	<div class="panel-body">
 		<ul>
@@ -59,7 +66,7 @@ func init() {
 		panic(err)
 	}
 
-	if err = temple.AddLayout("app", `<!doctype html>
+	if err = g.AddLayout("app", `<!doctype html>
 <html>
 	{{ template "partials/head" }}
 	<body>
@@ -72,18 +79,21 @@ func init() {
 		panic(err)
 	}
 
-	if err = temple.AddTemplate("people/index", `{{ define "content" }}
+	if err = g.AddTemplate("people/index", `{{ define "content" }}
 	{{ template "partials/people" . }}
 {{ end }}
 {{ template "layouts/app" . }}`); err != nil {
 		panic(err)
 	}
 
-	if err = temple.AddTemplate("people/show", `{{ define "content" }}
+	if err = g.AddTemplate("people/show", `{{ define "content" }}
 	{{ template "partials/person" . }}
 {{ end }}
 {{ template "layouts/app" . }}`); err != nil {
 		panic(err)
 	}
 
+	Templates = g.Templates
+	Partials = g.Partials
+	Layouts = g.Layouts
 }
