@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/albrow/zoom"
-	"github.com/soroushjp/humble/detect"
+	"github.com/go-humble/humble/detect"
 	"log"
 )
 
@@ -13,9 +13,7 @@ func init() {
 		if err := RegisterAll(); err != nil {
 			log.Fatal(err)
 		}
-		if err := zoom.Init(nil); err != nil {
-			log.Fatal(err)
-		}
+		zoom.Init(nil)
 	}
 }
 

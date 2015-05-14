@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"github.com/albrow/temple"
-	"github.com/albrow/temple-example/shared/models"
+	"github.com/go-humble/examples/people/shared/models"
+	"github.com/go-humble/temple"
 	"github.com/gorilla/mux"
 	"github.com/unrolled/render"
 	"log"

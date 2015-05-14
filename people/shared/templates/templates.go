@@ -4,7 +4,7 @@ package templates
 // Do not edit manually!
 
 import (
-	"github.com/albrow/temple"
+	"github.com/go-humble/temple"
 )
 
 func init() {

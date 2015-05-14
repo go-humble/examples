@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/albrow/temple-example/client/controllers"
-	"github.com/soroushjp/humble/router"
+	"github.com/go-humble/examples/people/client/controllers"
+	"github.com/go-humble/humble/router"
 	"log"
 )
 

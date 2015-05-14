@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/albrow/temple-example/server/controllers"
-	"github.com/albrow/temple-example/shared/models"
-	_ "github.com/albrow/temple-example/shared/templates"
 	"github.com/albrow/zoom"
 	"github.com/codegangsta/negroni"
+	"github.com/go-humble/examples/people/server/controllers"
+	"github.com/go-humble/examples/people/shared/models"
+	_ "github.com/go-humble/examples/people/shared/templates"
 	"github.com/gorilla/mux"
 	"log"
 )

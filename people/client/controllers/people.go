@@ -1,10 +1,10 @@
 package controllers
 
 import (
-	"github.com/albrow/temple"
-	"github.com/albrow/temple-example/shared/models"
-	_ "github.com/albrow/temple-example/shared/templates"
-	"github.com/soroushjp/humble/rest"
+	"github.com/go-humble/examples/people/shared/models"
+	_ "github.com/go-humble/examples/people/shared/templates"
+	"github.com/go-humble/humble/rest"
+	"github.com/go-humble/temple"
 	"honnef.co/go/js/dom"
 	"log"
 )
