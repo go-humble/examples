@@ -10,8 +10,8 @@ import (
 	"log"
 )
 
-//go:generate gopherjs build ../client/main.go -o public/js/app.js
 //go:generate temple build ../shared/templates/templates ../shared/templates/templates.go --partials=../shared/templates/partials --layouts=../shared/templates/layouts
+//go:generate gopherjs build ../client/main.go -o public/js/app.js
 
 func init() {
 	if err := CreateInitialPeople(); err != nil {
