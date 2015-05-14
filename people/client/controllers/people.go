@@ -34,7 +34,7 @@ func (p People) Index(params map[string]string) {
 	if err := rest.ReadAll(&people); err != nil {
 		panic(err)
 	}
-	if err := temple.ExecuteToEl(peopleTmpl, mainEl, people); err != nil {
+	if err := peopleTmpl.ExecuteToEl(mainEl, people); err != nil {
 		panic(err)
 	}
 }
@@ -44,7 +44,7 @@ func (p People) Show(params map[string]string) {
 	if err := rest.Read(params["id"], person); err != nil {
 		panic(err)
 	}
-	if err := temple.ExecuteToEl(personTmpl, mainEl, person); err != nil {
+	if err := personTmpl.ExecuteToEl(mainEl, person); err != nil {
 		panic(err)
 	}
 }
