@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/albrow/zoom"
-	"github.com/go-humble/humble/detect"
+	"github.com/go-humble/detect"
 	"log"
 )
 
@@ -27,10 +27,6 @@ type Person struct {
 	Name string
 	Age  int
 	zoom.RandomId
-}
-
-func (p Person) GetId() string {
-	return p.Id
 }
 
 func (p Person) RootURL() string {

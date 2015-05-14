@@ -3,7 +3,7 @@ package controllers
 import (
 	"github.com/go-humble/examples/people/shared/models"
 	_ "github.com/go-humble/examples/people/shared/templates"
-	"github.com/go-humble/humble/rest"
+	"github.com/go-humble/rest"
 	"github.com/go-humble/temple"
 	"honnef.co/go/js/dom"
 	"log"
@@ -30,7 +30,7 @@ func init() {
 type People struct{}
 
 func (p People) Index(params map[string]string) {
-	people := []models.Person{}
+	people := []*models.Person{}
 	if err := rest.ReadAll(&people); err != nil {
 		panic(err)
 	}

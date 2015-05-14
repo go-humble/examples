@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/go-humble/examples/people/client/controllers"
-	"github.com/go-humble/humble/router"
+	"github.com/go-humble/router"
 	"log"
 )
 
