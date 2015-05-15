@@ -30,5 +30,5 @@ type Person struct {
 }
 
 func (p Person) RootURL() string {
-	return "http://localhost:3000/people"
+	return "/people"
 }
