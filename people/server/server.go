@@ -1,13 +1,15 @@
 package main
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/albrow/zoom"
 	"github.com/codegangsta/negroni"
 	"github.com/go-humble/examples/people/server/controllers"
 	"github.com/go-humble/examples/people/shared/models"
 	_ "github.com/go-humble/examples/people/shared/templates"
 	"github.com/gorilla/mux"
-	"log"
 )
 
 //go:generate temple build ../shared/templates/templates ../shared/templates/templates.go --partials=../shared/templates/partials --layouts=../shared/templates/layouts
@@ -31,6 +33,8 @@ func main() {
 	router.HandleFunc("/people", people.Index).Methods("GET")
 	n := negroni.Classic()
 	n.UseHandler(router)
+	s := negroni.NewStatic(http.Dir("."))
+	s.Prefix = "/public"
 	n.Run(":3000")
 }
 
