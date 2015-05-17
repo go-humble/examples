@@ -29,10 +29,6 @@ func (p People) Index(res http.ResponseWriter, req *http.Request) {
 	case contentTypeJSON:
 		r := render.New()
 		r.JSON(res, http.StatusOK, people)
-	case contentTypeHTML:
-		if err := indexTmpl.Execute(res, people); err != nil {
-			log.Fatal(err)
-		}
 	default:
 		if err := indexTmpl.Execute(res, people); err != nil {
 			log.Fatal(err)
@@ -55,10 +51,6 @@ func (p People) Show(res http.ResponseWriter, req *http.Request) {
 	case contentTypeJSON:
 		r := render.New()
 		r.JSON(res, http.StatusOK, person)
-	case contentTypeHTML:
-		if err := showTmpl.Execute(res, person); err != nil {
-			log.Fatal(err)
-		}
 	default:
 		if err := showTmpl.Execute(res, person); err != nil {
 			log.Fatal(err)
