@@ -3,28 +3,15 @@ package views
 import (
 	"github.com/go-humble/examples/people/shared/models"
 	"github.com/go-humble/examples/people/shared/templates"
-	"github.com/go-humble/temple/temple"
 	"github.com/go-humble/view"
 	"honnef.co/go/js/dom"
 )
 
 var (
-	showPersonTmpl  temple.Partial
-	indexPeopleTmpl temple.Partial
+	showPersonTmpl  = templates.MustGetPartial("person")
+	indexPeopleTmpl = templates.MustGetPartial("people")
 	mainEl          = dom.GetWindow().Document().QuerySelector("#main")
 )
-
-func init() {
-	var found bool
-	showPersonTmpl, found = templates.Partials["person"]
-	if !found {
-		panic("Could not find tepmlate called person")
-	}
-	indexPeopleTmpl, found = templates.Partials["people"]
-	if !found {
-		panic("Could not find tepmlate called people")
-	}
-}
 
 type ShowPerson struct {
 	Person *models.Person
