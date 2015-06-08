@@ -6,21 +6,27 @@ import (
 	"log"
 )
 
-var People *zoom.ModelType
+var (
+	People *zoom.ModelType
+	pool   *zoom.Pool
+)
 
 func init() {
 	if detect.IsServer() {
-		if err := RegisterAll(); err != nil {
+		pool = zoom.NewPool(nil)
+		var err error
+		People, err = pool.Register(&Person{})
+		if err != nil {
 			log.Fatal(err)
 		}
-		zoom.Init(nil)
+		if err := CreateInitialPeople(); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 
-func RegisterAll() error {
-	var err error
-	People, err = zoom.Register(&Person{})
-	return err
+func ClosePool() error {
+	return pool.Close()
 }
 
 type Person struct {
@@ -31,4 +37,24 @@ type Person struct {
 
 func (p Person) RootURL() string {
 	return "/people"
+}
+
+func CreateInitialPeople() error {
+	if count, err := People.Count(); err != nil {
+		return err
+	} else if count == 0 {
+		log.Println("Creating people...")
+		t := pool.NewTransaction()
+		for i, name := range []string{"Foo", "Bar", "Baz"} {
+			person := &Person{
+				Age:  i + 20,
+				Name: name,
+			}
+			t.Save(People, person)
+		}
+		if err := t.Exec(); err != nil {
+			return err
+		}
+	}
+	return nil
 }
