@@ -10,9 +10,11 @@ import (
 
 type People struct{}
 
+var client = rest.NewClient()
+
 func (p People) Index(context *router.Context) {
 	people := []*models.Person{}
-	if err := rest.ReadAll(&people); err != nil {
+	if err := client.ReadAll(&people); err != nil {
 		log.Fatal(err)
 	}
 	if err := views.NewIndexPeople(people).Render(); err != nil {
@@ -22,7 +24,7 @@ func (p People) Index(context *router.Context) {
 
 func (p People) Show(context *router.Context) {
 	person := &models.Person{}
-	if err := rest.Read(context.Params["id"], person); err != nil {
+	if err := client.Read(context.Params["id"], person); err != nil {
 		log.Fatal(err)
 	}
 	if err := views.NewShowPerson(person).Render(); err != nil {
