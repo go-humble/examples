@@ -1,9 +1,10 @@
 package models
 
 import (
+	"log"
+
 	"github.com/albrow/zoom"
 	"github.com/go-humble/detect"
-	"log"
 )
 
 var (
@@ -30,8 +31,8 @@ func ClosePool() error {
 }
 
 type Person struct {
-	Name string
-	Age  int
+	Name string `json:"name"`
+	Age  int    `json:"age"`
 	zoom.RandomId
 }
 

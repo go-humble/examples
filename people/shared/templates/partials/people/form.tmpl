@@ -1,0 +1,11 @@
+<form method="post" action="/people">
+   <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" name="name" placeholder="Name" {{ if . }}value="{{.Name}}"{{ end }}>
+   </div>
+   <div class="form-group">
+      <label for="age">Age</label>
+      <input type="number" class="form-control" id="age" name="age" placeholder="Age" {{ if . }}value="{{.Age}}"{{ end }}>
+   </div>
+   <input type="submit" class="btn btn-default"></input>
+</form>

@@ -1,0 +1,7 @@
+<div class="alert alert-danger" role="alert">
+   <ul>
+   {{ range $err := . }}
+      <li>{{ $err }}</li>
+   {{ end }}
+   </ul>
+</div>

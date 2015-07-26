@@ -2,9 +2,14 @@
 <html>
 	{{ template "partials/head" }}
 	<body>
+		<div class="container" id="errors">
+			{{ if .Errors }}
+				{{ template "partials/errors" .Errors }}
+			{{ end }}
+		</div>
 		<div class="container" id="main">
 			{{ template "content" . }}
-		</div>		
+		</div>
 		<script type="text/javascript" src="/js/app.js"></script>
 	</body>
 </html>

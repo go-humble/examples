@@ -8,8 +8,9 @@ import (
 )
 
 var (
-	showPersonTmpl  = templates.MustGetPartial("person")
-	indexPeopleTmpl = templates.MustGetPartial("people")
+	showPersonTmpl  = templates.MustGetPartial("people/show")
+	indexPeopleTmpl = templates.MustGetPartial("people/index")
+	newPersonTmpl   = templates.MustGetPartial("people/new")
 	mainEl          = dom.GetWindow().Document().QuerySelector("#main")
 )
 
@@ -45,4 +46,21 @@ func NewIndexPeople(people []*models.Person) *IndexPeople {
 
 func (v IndexPeople) Render() error {
 	return indexPeopleTmpl.ExecuteEl(v.Element(), v.People)
+}
+
+type NewPerson struct {
+	Person *models.Person
+	view.DefaultView
+}
+
+func NewNewPerson(person *models.Person) *NewPerson {
+	v := &NewPerson{
+		Person: person,
+	}
+	v.SetElement(mainEl)
+	return v
+}
+
+func (v NewPerson) Render() error {
+	return newPersonTmpl.ExecuteEl(v.Element(), v.Person)
 }
