@@ -9,15 +9,19 @@ import (
 	"github.com/go-humble/router"
 )
 
-type People struct{}
+type People struct {
+	Router *router.Router
+}
 
 var client = rest.NewClient()
 
 func (p People) New(context *router.Context) {
+	newPersonView := views.NewNewPerson(nil, p.Router)
 	if context.InitialLoad {
+		newPersonView.DelegateEvents()
 		return
 	}
-	if err := views.NewNewPerson(nil).Render(); err != nil {
+	if err := newPersonView.Render(); err != nil {
 		log.Fatal(err)
 	}
 }

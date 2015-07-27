@@ -45,7 +45,6 @@ func (p People) New(res http.ResponseWriter, req *http.Request) {
 	}
 	session.Save(req, res)
 	tmplData["Person"] = personData
-	log.Println(tmplData)
 	if err := peopleNewTmpl.Execute(res, tmplData); err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +55,6 @@ func (p People) Create(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Println(personData)
 	val := personData.Validator()
 	val.Require("name")
 	val.Require("age")
@@ -89,7 +87,13 @@ func (p People) Create(res http.ResponseWriter, req *http.Request) {
 	if err := models.People.Save(person); err != nil {
 		panic(err)
 	}
-	http.Redirect(res, req, "/people", http.StatusSeeOther)
+	switch req.Header.Get("Accept") {
+	case contentTypeJSON:
+		r := render.New()
+		r.JSON(res, http.StatusOK, person)
+	default:
+		http.Redirect(res, req, "/people", http.StatusSeeOther)
+	}
 }
 
 func (p People) Index(res http.ResponseWriter, req *http.Request) {

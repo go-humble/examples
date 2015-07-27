@@ -48,7 +48,7 @@ func init() {
 		panic(err)
 	}
 
-	if err = g.AddPartial("people/form", `<form method="post" action="/people">
+	if err = g.AddPartial("people/form", `<form method="post" id="person-form" action="/people">
    <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name" name="name" placeholder="Name" {{ if . }}value="{{.Name}}"{{ end }}>
