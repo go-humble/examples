@@ -124,11 +124,9 @@ func init() {
 <html>
 	{{ template "partials/head" }}
 	<body>
-		<div class="container" id="errors">
-			{{ if .Errors }}
-				{{ template "partials/errors" .Errors }}
-			{{ end }}
-		</div>
+		{{ if .Errors }}
+			{{ template "partials/errors" .Errors }}
+		{{ end }}
 		<div class="container" id="main">
 			{{ template "content" . }}
 		</div>

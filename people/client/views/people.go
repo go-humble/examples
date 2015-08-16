@@ -2,7 +2,8 @@ package views
 
 import (
 	"fmt"
-	"strconv"
+
+	"github.com/go-humble/form"
 
 	"github.com/go-humble/examples/people/shared/models"
 	"github.com/go-humble/examples/people/shared/templates"
@@ -16,6 +17,7 @@ var (
 	showPersonTmpl  = templates.MustGetPartial("people/show")
 	indexPeopleTmpl = templates.MustGetPartial("people/index")
 	newPersonTmpl   = templates.MustGetPartial("people/new")
+	errTmpl         = templates.MustGetPartial("errors")
 	mainEl          = dom.GetWindow().Document().QuerySelector("#main")
 )
 
@@ -59,6 +61,24 @@ type NewPerson struct {
 	view.DefaultView
 }
 
+type Errors struct {
+	Errors []error
+	view.DefaultView
+}
+
+func (v *Errors) Render() error {
+	if err := errTmpl.ExecuteEl(v.Element(), v.Errors); err != nil {
+		return err
+	}
+	return nil
+}
+
+func NewErrors(errors []error) *Errors {
+	return &Errors{
+		Errors: errors,
+	}
+}
+
 func NewNewPerson(person *models.Person, router *router.Router) *NewPerson {
 	v := &NewPerson{
 		Person: person,
@@ -77,43 +97,47 @@ func (v *NewPerson) Render() error {
 }
 
 func (v *NewPerson) DelegateEvents() {
-	view.AddEventListener(v, "submit", "#person-form", NewCreatePersonListener(v.Router))
+	view.AddEventListener(v, "submit", "#person-form", v.CreatePerson)
 }
 
-func NewCreatePersonListener(router *router.Router) func(dom.Event) {
-	return func(ev dom.Event) {
-		ev.PreventDefault()
-		form, ok := ev.CurrentTarget().(*dom.HTMLFormElement)
-		if !ok {
-			panic("Could not cast target to dom.HTMLFormElement: " + fmt.Sprintf("%T", ev.CurrentTarget()))
-		}
-		person := &models.Person{}
-		for _, el := range form.Elements() {
-			input, ok := el.(*dom.HTMLInputElement)
-			if !ok {
-				continue
-			}
-			if input.Type == "submit" {
-				continue
-			}
-			switch input.Name {
-			case "age":
-				ageInt, err := strconv.Atoi(input.Value)
-				if err != nil {
-					panic(err)
-				}
-				person.Age = ageInt
-			case "name":
-				person.Name = input.Value
-			}
-		}
-		restClient := rest.NewClient()
-		restClient.ContentType = rest.ContentJSON
-		go func() {
-			if err := restClient.Create(person); err != nil {
-				panic(err)
-			}
-			router.Navigate("/people")
-		}()
+var errorsView *Errors
+
+func (v *NewPerson) CreatePerson(ev dom.Event) {
+	ev.PreventDefault()
+	formEl, ok := ev.CurrentTarget().(*dom.HTMLFormElement)
+	if !ok {
+		panic("Could not cast target to dom.HTMLFormElement: " + fmt.Sprintf("%T", ev.CurrentTarget()))
 	}
+	f, err := form.Parse(formEl)
+	if err != nil {
+		panic(err)
+	}
+	f.Validate("name").Required()
+	f.Validate("age").Required().IsInt().Greater(0)
+	if f.HasErrors() {
+		if errorsView == nil {
+			errorsView = NewErrors(f.Errors)
+			view.InsertBefore(errorsView, v)
+		}
+		errorsView.Errors = f.Errors
+		if err := errorsView.Render(); err != nil {
+			panic(err)
+		}
+		return
+	}
+	person := &models.Person{}
+	if err := f.Bind(person); err != nil {
+		panic(err)
+	}
+	restClient := rest.NewClient()
+	restClient.ContentType = rest.ContentJSON
+	go func() {
+		if err := restClient.Create(person); err != nil {
+			if httpErr, ok := err.(rest.HTTPError); ok {
+				fmt.Println(string(httpErr.Body))
+			}
+			panic(err)
+		}
+		v.Router.Navigate("/people")
+	}()
 }
