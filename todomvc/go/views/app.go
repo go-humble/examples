@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	appTmpl = templates.MustGetTemplate("app")
+	appTmpl  = templates.MustGetTemplate("app")
+	document = dom.GetWindow().Document()
 )
 
 type App struct {
@@ -56,6 +57,9 @@ func (v *App) CreateTodo(ev dom.Event) {
 	if err := v.Render(); err != nil {
 		panic(err)
 	}
+	// When we call Render, a large portion of teh DOM is replaced, so we need
+	// to select the new input element and call focus on it.
+	document.QuerySelector(".new-todo").(dom.HTMLElement).Focus()
 }
 
 func (v *App) ClearCompleted(ev dom.Event) {
