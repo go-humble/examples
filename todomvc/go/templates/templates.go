@@ -35,7 +35,9 @@ func init() {
 	</li>
 </ul>
 <!-- Hidden if no completed items are left ↓ -->
-<button class="clear-completed">Clear completed</button>`); err != nil {
+{{ if len .Completed}}
+<button class="clear-completed">Clear completed</button>
+{{ end }}`); err != nil {
 		panic(err)
 	}
 
