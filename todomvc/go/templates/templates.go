@@ -21,7 +21,10 @@ func init() {
 	g := temple.NewGroup()
 
 	if err = g.AddPartial("footer", `<!-- This should be 0 items left by default -->
-<span class="todo-count"><strong>{{ len .Remaining }}</strong> items left</span>
+<span class="todo-count">
+	<strong>{{ len .Remaining }}</strong>
+	item{{ if ne (len .Remaining) 1}}s{{end}} left
+</span>
 <!-- Remove this if you don't implement routing -->
 <ul class="filters">
 	<li>
