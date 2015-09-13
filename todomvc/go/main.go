@@ -12,7 +12,11 @@ import (
 
 func main() {
 	log.Println("Starting")
-	appView := views.NewApp(models.TodoList{})
+	todos := &models.TodoList{}
+	if err := todos.Load(); err != nil {
+		panic(err)
+	}
+	appView := views.NewApp(todos)
 	if err := appView.Render(); err != nil {
 		panic(err)
 	}
