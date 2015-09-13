@@ -9,9 +9,13 @@ type Todo struct {
 	list      *TodoList
 }
 
-func (t *Todo) Toggle() error {
+func (t *Todo) Toggle() {
 	t.completed = !t.completed
-	return t.list.Save()
+	t.list.changed()
+}
+
+func (t *Todo) Remove() {
+	t.list.DeleteById(t.id)
 }
 
 func (t *Todo) Completed() bool {
@@ -22,18 +26,18 @@ func (t *Todo) Remaining() bool {
 	return !t.completed
 }
 
-func (t *Todo) SetCompleted(completed bool) error {
+func (t *Todo) SetCompleted(completed bool) {
 	t.completed = completed
-	return t.list.Save()
+	t.list.changed()
 }
 
 func (t *Todo) Title() string {
 	return t.title
 }
 
-func (t *Todo) SetTitle(title string) error {
+func (t *Todo) SetTitle(title string) {
 	t.title = title
-	return t.list.Save()
+	t.list.changed()
 }
 
 func (t *Todo) Id() string {

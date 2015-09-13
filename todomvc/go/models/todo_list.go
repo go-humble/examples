@@ -8,7 +8,18 @@ import (
 var store = locstor.NewDataStore(locstor.JSONEncoding)
 
 type TodoList struct {
-	todos []*Todo
+	todos           []*Todo
+	changeListeners []func(*TodoList)
+}
+
+func (list *TodoList) OnChange(f func(*TodoList)) {
+	list.changeListeners = append(list.changeListeners, f)
+}
+
+func (list *TodoList) changed() {
+	for _, f := range list.changeListeners {
+		f(list)
+	}
 }
 
 func (list *TodoList) Load() error {
@@ -28,10 +39,6 @@ func (list TodoList) Save() error {
 	if err := store.Save("todos", list.todos); err != nil {
 		return err
 	}
-	otherList := &TodoList{}
-	if err := store.Find("todos", &otherList.todos); err != nil {
-		return err
-	}
 	return nil
 }
 
@@ -47,18 +54,18 @@ func (list TodoList) Remaining() []*Todo {
 	return list.filter((*Todo).Remaining)
 }
 
-func (list *TodoList) AddTodo(title string) error {
+func (list *TodoList) AddTodo(title string) {
 	list.todos = append(list.todos, &Todo{
 		id:    uniuri.New(),
 		title: title,
 		list:  list,
 	})
-	return list.Save()
+	list.changed()
 }
 
-func (list *TodoList) ClearCompleted() error {
+func (list *TodoList) ClearCompleted() {
 	list.todos = list.Remaining()
-	return list.Save()
+	list.changed()
 }
 
 func (list *TodoList) FindById(id string) *Todo {
@@ -68,9 +75,9 @@ func (list *TodoList) FindById(id string) *Todo {
 	return nil
 }
 
-func (list *TodoList) DeleteById(id string) error {
+func (list *TodoList) DeleteById(id string) {
 	list.todos = list.filter(invert(todoById(id)))
-	return list.Save()
+	list.changed()
 }
 
 func (list TodoList) filter(f func(*Todo) bool) []*Todo {

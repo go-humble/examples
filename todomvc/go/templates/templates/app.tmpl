@@ -8,9 +8,6 @@
 	<input class="toggle-all" type="checkbox" {{ if eq (len .All) (len .Completed) }}checked{{ end }}>
 	<label for="toggle-all">Mark all as complete</label>
 	<ul class="todo-list">
-		{{ range $todo := .All }}
-		{{ template "partials/todo" $todo }}
-		{{ end }}
 	</ul>
 </section>
 {{ end }}

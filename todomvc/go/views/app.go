@@ -40,6 +40,14 @@ func (v *App) Render() error {
 	if err := v.tmpl.ExecuteEl(v.Element(), v.Todos); err != nil {
 		return err
 	}
+	listEl := v.Element().QuerySelector(".todo-list")
+	for _, todo := range v.Todos.All() {
+		todoView := NewTodo(todo)
+		view.AppendToEl(listEl, todoView)
+		if err := todoView.Render(); err != nil {
+			return err
+		}
+	}
 	v.DelegateEvents()
 	return nil
 }
@@ -49,15 +57,6 @@ func (v *App) DelegateEvents() {
 		triggerOnKeyCode(enterKey, v.CreateTodo))
 	view.AddEventListener(v, "click", ".clear-completed", v.ClearCompleted)
 	view.AddEventListener(v, "click", ".toggle-all", v.ToggleAll)
-	// TODO: re-implement these methods on a todo view
-	// view.AddEventListener(v, "click", "li .toggle", v.ToggleTodo)
-	// view.AddEventListener(v, "click", "li .destroy", v.RemoveTodo)
-	// view.AddEventListener(v, "dblclick", "li label", v.EditTodo)
-	// view.AddEventListener(v, "blur", "li .edit", v.CommitEditTodo)
-	// view.AddEventListener(v, "keydown", "li .edit",
-	// 	triggerOnKeyCode(escapeKey, v.CancelEditTodo))
-	// view.AddEventListener(v, "keypress", "li .edit",
-	// 	triggerOnKeyCode(enterKey, v.CommitEditTodo))
 }
 
 func (v *App) CreateTodo(ev dom.Event) {
@@ -65,24 +64,12 @@ func (v *App) CreateTodo(ev dom.Event) {
 	if !ok {
 		panic("Could not convert event target to dom.HTMLInputElement")
 	}
-	if err := v.Todos.AddTodo(input.Value); err != nil {
-		panic(err)
-	}
-	if err := v.Render(); err != nil {
-		panic(err)
-	}
-	// When we call Render, a large portion of the DOM is replaced, so we need
-	// to select the new input element and call focus on it.
+	v.Todos.AddTodo(input.Value)
 	document.QuerySelector(".new-todo").(dom.HTMLElement).Focus()
 }
 
 func (v *App) ClearCompleted(ev dom.Event) {
-	if err := v.Todos.ClearCompleted(); err != nil {
-		panic(err)
-	}
-	if err := v.Render(); err != nil {
-		panic(err)
-	}
+	v.Todos.ClearCompleted()
 }
 
 func (v *App) ToggleAll(ev dom.Event) {
@@ -93,73 +80,7 @@ func (v *App) ToggleAll(ev dom.Event) {
 	for _, todo := range v.Todos.All() {
 		todo.SetCompleted(input.Checked)
 	}
-	if err := v.Render(); err != nil {
-		panic(err)
-	}
 }
-
-// func (v *App) ToggleTodo(ev dom.Event) {
-// 	id := ev.CurrentTarget().ParentElement().GetAttribute("data-id")
-// 	todo, found := v.Todos.FindById(id)
-// 	if !found {
-// 		panic("Could not find todo with id: " + id)
-// 	}
-// 	todo.Toggle()
-// 	if err := v.Render(); err != nil {
-// 		panic(err)
-// 	}
-// }
-
-// func (v *App) EditTodo(ev dom.Event) {
-// 	li := ev.Target().ParentElement().ParentElement()
-// 	addClass(li, "editing")
-// 	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
-// 	if !ok {
-// 		panic("Could not convert to dom.HTMLInputElement")
-// 	}
-// 	input.Focus()
-// 	// Move the cursor to the end of the input.
-// 	input.SelectionStart = input.SelectionEnd + len(input.Value)
-// }
-
-// func (v *App) CommitEditTodo(ev dom.Event) {
-// 	li := ev.Target().ParentElement()
-// 	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
-// 	if !ok {
-// 		panic("Could not convert to dom.HTMLInputElement")
-// 	}
-// 	todo, found := v.Todos.FindById(li.QuerySelector(".view").GetAttribute("data-id"))
-// 	if !found {
-// 		panic("Could not find todo")
-// 	}
-// 	todo.Title = input.Value
-// 	if err := v.Render(); err != nil {
-// 		panic(err)
-// 	}
-// }
-
-// func (v *App) CancelEditTodo(ev dom.Event) {
-// 	li := ev.Target().ParentElement()
-// 	removeClass(li, "editing")
-// 	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
-// 	if !ok {
-// 		panic("Could not convert to dom.HTMLInputElement")
-// 	}
-// 	todo, found := v.Todos.FindById(li.QuerySelector(".view").GetAttribute("data-id"))
-// 	if !found {
-// 		panic("Could not find todo")
-// 	}
-// 	input.Value = todo.Title
-// 	input.Blur()
-// }
-
-// func (v *App) RemoveTodo(ev dom.Event) {
-// 	id := ev.CurrentTarget().ParentElement().GetAttribute("data-id")
-// 	v.Todos.DeleteById(id)
-// 	if err := v.Render(); err != nil {
-// 		panic(err)
-// 	}
-// }
 
 func triggerOnKeyCode(keyCode int, listener func(dom.Event)) func(dom.Event) {
 	return func(ev dom.Event) {

@@ -45,7 +45,7 @@ func init() {
 	}
 
 	if err = g.AddPartial("todo", `<li {{ if .Completed }}class="completed"{{ end }}>
-	<div class="view" data-id="{{ .Id }}">
+	<div class="view">
 		<input class="toggle" type="checkbox" {{ if .Completed }}checked{{ end }}>
 		<label>{{ .Title }}</label>
 		<button class="destroy"></button>
@@ -65,9 +65,6 @@ func init() {
 	<input class="toggle-all" type="checkbox" {{ if eq (len .All) (len .Completed) }}checked{{ end }}>
 	<label for="toggle-all">Mark all as complete</label>
 	<ul class="todo-list">
-		{{ range $todo := .All }}
-		{{ template "partials/todo" $todo }}
-		{{ end }}
 	</ul>
 </section>
 {{ end }}

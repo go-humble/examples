@@ -1,5 +1,5 @@
 <li {{ if .Completed }}class="completed"{{ end }}>
-	<div class="view" data-id="{{ .Id }}">
+	<div class="view">
 		<input class="toggle" type="checkbox" {{ if .Completed }}checked{{ end }}>
 		<label>{{ .Title }}</label>
 		<button class="destroy"></button>

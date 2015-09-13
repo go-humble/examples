@@ -20,4 +20,15 @@ func main() {
 	if err := appView.Render(); err != nil {
 		panic(err)
 	}
+	todos.OnChange(func(newTodos *models.TodoList) {
+		appView.Todos = newTodos
+		go func() {
+			if err := appView.Todos.Save(); err != nil {
+				panic(err)
+			}
+		}()
+		if err := appView.Render(); err != nil {
+			panic(err)
+		}
+	})
 }
