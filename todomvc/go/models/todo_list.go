@@ -42,30 +42,6 @@ func (list TodoList) Save() error {
 	return nil
 }
 
-type Filter func(*TodoList) []*Todo
-
-var Filters = struct {
-	All       Filter
-	Completed Filter
-	Remaining Filter
-}{
-	All:       (*TodoList).All,
-	Completed: (*TodoList).Completed,
-	Remaining: (*TodoList).Remaining,
-}
-
-func (list TodoList) All() []*Todo {
-	return list.todos
-}
-
-func (list TodoList) Completed() []*Todo {
-	return list.filter((*Todo).Completed)
-}
-
-func (list TodoList) Remaining() []*Todo {
-	return list.filter((*Todo).Remaining)
-}
-
 func (list *TodoList) AddTodo(title string) {
 	list.todos = append(list.todos, &Todo{
 		id:    uniuri.New(),
@@ -80,36 +56,7 @@ func (list *TodoList) ClearCompleted() {
 	list.changed()
 }
 
-func (list *TodoList) FindById(id string) *Todo {
-	if todos := list.filter(todoById(id)); len(todos) > 0 {
-		return todos[0]
-	}
-	return nil
-}
-
 func (list *TodoList) DeleteById(id string) {
 	list.todos = list.filter(invert(todoById(id)))
 	list.changed()
-}
-
-func (list TodoList) filter(f func(*Todo) bool) []*Todo {
-	results := []*Todo{}
-	for _, todo := range list.todos {
-		if f(todo) {
-			results = append(results, todo)
-		}
-	}
-	return results
-}
-
-func invert(f func(*Todo) bool) func(*Todo) bool {
-	return func(todo *Todo) bool {
-		return !f(todo)
-	}
-}
-
-func todoById(id string) func(*Todo) bool {
-	return func(t *Todo) bool {
-		return t.id == id
-	}
 }
