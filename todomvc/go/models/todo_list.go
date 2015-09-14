@@ -42,6 +42,18 @@ func (list TodoList) Save() error {
 	return nil
 }
 
+type Filter func(*TodoList) []*Todo
+
+var Filters = struct {
+	All       Filter
+	Completed Filter
+	Remaining Filter
+}{
+	All:       (*TodoList).All,
+	Completed: (*TodoList).Completed,
+	Remaining: (*TodoList).Remaining,
+}
+
 func (list TodoList) All() []*Todo {
 	return list.todos
 }

@@ -22,23 +22,23 @@ func init() {
 
 	if err = g.AddPartial("footer", `<!-- This should be 0 items left by default -->
 <span class="todo-count">
-	<strong>{{ len .Remaining }}</strong>
-	item{{ if ne (len .Remaining) 1}}s{{end}} left
+	<strong>{{ len .Todos.Remaining }}</strong>
+	item{{ if ne (len .Todos.Remaining) 1}}s{{end}} left
 </span>
 <!-- Remove this if you don't implement routing -->
 <ul class="filters">
 	<li>
-		<a class="selected" href="#/">All</a>
+		<a {{ if eq .Path "#/"}} class="selected" {{ end }} href="#/">All</a>
 	</li>
 	<li>
-		<a href="#/active">Active</a>
+		<a {{ if eq .Path "#/active"}} class="selected" {{ end }} href="#/active">Active</a>
 	</li>
 	<li>
-		<a href="#/completed">Completed</a>
+		<a {{ if eq .Path "#/completed"}} class="selected" {{ end }} href="#/completed">Completed</a>
 	</li>
 </ul>
 <!-- Hidden if no completed items are left ↓ -->
-{{ if len .Completed}}
+{{ if len .Todos.Completed}}
 <button class="clear-completed">Clear completed</button>
 {{ end }}`); err != nil {
 		panic(err)
@@ -60,16 +60,16 @@ func init() {
 	<input class="new-todo" placeholder="What needs to be done?" autofocus>
 </header>
 <!-- This section should be hidden by default and shown when there are todos -->
-{{ if gt (len .All) 0 }}
+{{ if gt (len .Todos.All) 0 }}
 <section class="main">
-	<input class="toggle-all" type="checkbox" {{ if eq (len .All) (len .Completed) }}checked{{ end }}>
+	<input class="toggle-all" type="checkbox" {{ if eq (len .Todos.All) (len .Todos.Completed) }}checked{{ end }}>
 	<label for="toggle-all">Mark all as complete</label>
 	<ul class="todo-list">
 	</ul>
 </section>
 {{ end }}
 <!-- This footer should hidden by default and shown when there are todos -->
-{{ if gt (len .All) 0 }}
+{{ if gt (len .Todos.All) 0 }}
 <footer class="footer">
 	{{ template "partials/footer" . }}
 </footer>

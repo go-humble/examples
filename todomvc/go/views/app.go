@@ -22,8 +22,9 @@ var (
 )
 
 type App struct {
-	Todos *models.TodoList
-	tmpl  *temple.Template
+	Todos  *models.TodoList
+	tmpl   *temple.Template
+	Filter models.Filter
 	view.DefaultView
 }
 
@@ -36,12 +37,19 @@ func NewApp(todos *models.TodoList) *App {
 	return v
 }
 
+func (v *App) tmplData() map[string]interface{} {
+	return map[string]interface{}{
+		"Todos": v.Todos,
+		"Path":  dom.GetWindow().Location().Hash,
+	}
+}
+
 func (v *App) Render() error {
-	if err := v.tmpl.ExecuteEl(v.Element(), v.Todos); err != nil {
+	if err := v.tmpl.ExecuteEl(v.Element(), v.tmplData()); err != nil {
 		return err
 	}
 	listEl := v.Element().QuerySelector(".todo-list")
-	for _, todo := range v.Todos.All() {
+	for _, todo := range v.Filter(v.Todos) {
 		todoView := NewTodo(todo)
 		view.AppendToEl(listEl, todoView)
 		if err := todoView.Render(); err != nil {

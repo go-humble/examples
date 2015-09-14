@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 
+	"github.com/go-humble/router"
+
 	"github.com/go-humble/examples/todomvc/go/models"
 	"github.com/go-humble/examples/todomvc/go/views"
 )
@@ -12,14 +14,12 @@ import (
 
 func main() {
 	log.Println("Starting")
+
 	todos := &models.TodoList{}
 	if err := todos.Load(); err != nil {
 		panic(err)
 	}
 	appView := views.NewApp(todos)
-	if err := appView.Render(); err != nil {
-		panic(err)
-	}
 	todos.OnChange(func(newTodos *models.TodoList) {
 		appView.Todos = newTodos
 		go func() {
@@ -31,4 +31,26 @@ func main() {
 			panic(err)
 		}
 	})
+
+	r := router.New()
+	r.ForceHashURL = true
+	r.HandleFunc("/", func(_ *router.Context) {
+		appView.Filter = models.Filters.All
+		if err := appView.Render(); err != nil {
+			panic(err)
+		}
+	})
+	r.HandleFunc("/active", func(_ *router.Context) {
+		appView.Filter = models.Filters.Remaining
+		if err := appView.Render(); err != nil {
+			panic(err)
+		}
+	})
+	r.HandleFunc("/completed", func(_ *router.Context) {
+		appView.Filter = models.Filters.Completed
+		if err := appView.Render(); err != nil {
+			panic(err)
+		}
+	})
+	r.Start()
 }
