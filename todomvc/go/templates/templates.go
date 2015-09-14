@@ -20,12 +20,10 @@ func init() {
 	var err error
 	g := temple.NewGroup()
 
-	if err = g.AddPartial("footer", `<!-- This should be 0 items left by default -->
-<span class="todo-count">
+	if err = g.AddPartial("footer", `<span class="todo-count">
 	<strong>{{ len .Todos.Remaining }}</strong>
 	item{{ if ne (len .Todos.Remaining) 1}}s{{end}} left
 </span>
-<!-- Remove this if you don't implement routing -->
 <ul class="filters">
 	<li>
 		<a {{ if eq .Path "#/"}} class="selected" {{ end }} href="#/">All</a>
@@ -37,7 +35,6 @@ func init() {
 		<a {{ if eq .Path "#/completed"}} class="selected" {{ end }} href="#/completed">Completed</a>
 	</li>
 </ul>
-<!-- Hidden if no completed items are left ↓ -->
 {{ if len .Todos.Completed}}
 <button class="clear-completed">Clear completed</button>
 {{ end }}`); err != nil {
@@ -59,7 +56,6 @@ func init() {
 	<h1>todos</h1>
 	<input class="new-todo" placeholder="What needs to be done?" autofocus>
 </header>
-<!-- This section should be hidden by default and shown when there are todos -->
 {{ if gt (len .Todos.All) 0 }}
 <section class="main">
 	<input class="toggle-all" type="checkbox" {{ if eq (len .Todos.All) (len .Todos.Completed) }}checked{{ end }}>
@@ -68,7 +64,6 @@ func init() {
 	</ul>
 </section>
 {{ end }}
-<!-- This footer should hidden by default and shown when there are todos -->
 {{ if gt (len .Todos.All) 0 }}
 <footer class="footer">
 	{{ template "partials/footer" . }}

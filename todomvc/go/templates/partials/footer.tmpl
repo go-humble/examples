@@ -1,9 +1,7 @@
-<!-- This should be 0 items left by default -->
 <span class="todo-count">
 	<strong>{{ len .Todos.Remaining }}</strong>
 	item{{ if ne (len .Todos.Remaining) 1}}s{{end}} left
 </span>
-<!-- Remove this if you don't implement routing -->
 <ul class="filters">
 	<li>
 		<a {{ if eq .Path "#/"}} class="selected" {{ end }} href="#/">All</a>
@@ -15,7 +13,6 @@
 		<a {{ if eq .Path "#/completed"}} class="selected" {{ end }} href="#/completed">Completed</a>
 	</li>
 </ul>
-<!-- Hidden if no completed items are left ↓ -->
 {{ if len .Todos.Completed}}
 <button class="clear-completed">Clear completed</button>
 {{ end }}
