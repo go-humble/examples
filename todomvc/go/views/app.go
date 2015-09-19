@@ -22,10 +22,14 @@ var (
 )
 
 type App struct {
-	Todos  *models.TodoList
-	tmpl   *temple.Template
-	Filter models.Filter
+	Todos     *models.TodoList
+	tmpl      *temple.Template
+	predicate models.Predicate
 	view.DefaultView
+}
+
+func (v *App) UseFilter(predicate models.Predicate) {
+	v.predicate = predicate
 }
 
 func NewApp(todos *models.TodoList) *App {
@@ -49,7 +53,7 @@ func (v *App) Render() error {
 		return err
 	}
 	listEl := v.Element().QuerySelector(".todo-list")
-	for _, todo := range v.Filter(v.Todos) {
+	for _, todo := range v.Todos.Filter(v.predicate) {
 		todoView := NewTodo(todo)
 		view.AppendToEl(listEl, todoView)
 		if err := todoView.Render(); err != nil {

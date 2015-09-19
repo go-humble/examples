@@ -1,39 +1,40 @@
 package models
 
-// Filter is a function which operates on a *TodoList and returns a slice of
-// todos that match certain criteria.
-type Filter func(*TodoList) []*Todo
+// Predicate is a function which takes a todo and returns a bool. It can be
+// used in filters.
+type Predicate func(*Todo) bool
 
-// Filters is a data structure with commonly used Filters.
-var Filters = struct {
-	All       Filter
-	Completed Filter
-	Remaining Filter
+// Predicates is a data structure with commonly used Predicates.
+var Predicates = struct {
+	All       Predicate
+	Completed Predicate
+	Remaining Predicate
 }{
-	All:       (*TodoList).All,
-	Completed: (*TodoList).Completed,
-	Remaining: (*TodoList).Remaining,
+	All:       func(_ *Todo) bool { return true },
+	Completed: (*Todo).Completed,
+	Remaining: (*Todo).Remaining,
 }
 
-// All is a filter that returns all the todos in the list.
+// All returns all the todos. It applies a filter using the All predicate.
 func (list TodoList) All() []*Todo {
-	return list.todos
+	return list.Filter(Predicates.All)
 }
 
-// Completed is a filter that returns only the completed todos in the list.
+// Completed returns only those todos which are completed. It applies a filter
+// using the Completed predicate.
 func (list TodoList) Completed() []*Todo {
-	return list.filter((*Todo).Completed)
+	return list.Filter(Predicates.Completed)
 }
 
-// Remaining is a filter that returns only the remaining (or active) todos in
-// the list.
+// Remaining returns only those todos which are remaining (or active). It
+// applies a filter using the Remaining predicate.
 func (list TodoList) Remaining() []*Todo {
-	return list.filter((*Todo).Remaining)
+	return list.Filter(Predicates.Remaining)
 }
 
-// Filter calls the given function for each todo in the list, and returns a
-// slice todos for which the function f returns true.
-func (list TodoList) filter(f func(*Todo) bool) []*Todo {
+// Filter returns a slice todos for which the predicate is true. The returned
+// slice is a subset of all todos.
+func (list TodoList) Filter(f Predicate) []*Todo {
 	results := []*Todo{}
 	for _, todo := range list.todos {
 		if f(todo) {
@@ -43,18 +44,18 @@ func (list TodoList) filter(f func(*Todo) bool) []*Todo {
 	return results
 }
 
-// Invert inverts a function that operates on a todo and returns the inverted
-// function. Where f would return true, the inverted function would return false
-// and where f would return false, the inverted function would return true.
-func invert(f func(*Todo) bool) func(*Todo) bool {
+// Invert inverts a predicate, i.e. a function which accepts a todo as an
+// argument and returns a bool. It returns the inverted predicate. Where f would
+// return true, the inverted predicate would return false and vice versa.
+func invert(f Predicate) Predicate {
 	return func(todo *Todo) bool {
 		return !f(todo)
 	}
 }
 
-// todoById returns a function which returns true iff todo.id equals the given
+// todoById returns a predicate which is true iff todo.id equals the given
 // id.
-func todoById(id string) func(*Todo) bool {
+func todoById(id string) Predicate {
 	return func(t *Todo) bool {
 		return t.id == id
 	}

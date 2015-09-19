@@ -35,19 +35,19 @@ func main() {
 	r := router.New()
 	r.ForceHashURL = true
 	r.HandleFunc("/", func(_ *router.Context) {
-		appView.Filter = models.Filters.All
+		appView.UseFilter(models.Predicates.All)
 		if err := appView.Render(); err != nil {
 			panic(err)
 		}
 	})
 	r.HandleFunc("/active", func(_ *router.Context) {
-		appView.Filter = models.Filters.Remaining
+		appView.UseFilter(models.Predicates.Remaining)
 		if err := appView.Render(); err != nil {
 			panic(err)
 		}
 	})
 	r.HandleFunc("/completed", func(_ *router.Context) {
-		appView.Filter = models.Filters.Completed
+		appView.UseFilter(models.Predicates.Completed)
 		if err := appView.Render(); err != nil {
 			panic(err)
 		}
