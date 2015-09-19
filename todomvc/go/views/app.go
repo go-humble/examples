@@ -1,7 +1,6 @@
 package views
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/go-humble/examples/todomvc/go/models"
@@ -12,6 +11,7 @@ import (
 )
 
 const (
+	// Constants for certain keycodes.
 	enterKey  = 13
 	escapeKey = 27
 )
@@ -21,17 +21,23 @@ var (
 	document = dom.GetWindow().Document()
 )
 
+// App is the main view for the application.
 type App struct {
-	Todos     *models.TodoList
-	tmpl      *temple.Template
+	Todos *models.TodoList
+	tmpl  *temple.Template
+	// predicate will be used to filter the todos when rendering. Only
+	// todos for which the predicate is true will be rendered.
 	predicate models.Predicate
 	view.DefaultView
 }
 
+// UseFilter causes the app to use the given predicate to filter the todos when
+// rendering. Only todos for which the predicate returns true will be rendered.
 func (v *App) UseFilter(predicate models.Predicate) {
 	v.predicate = predicate
 }
 
+// NewApp creates and returns a new App view, using the given todo list.
 func NewApp(todos *models.TodoList) *App {
 	v := &App{
 		Todos: todos,
@@ -41,6 +47,8 @@ func NewApp(todos *models.TodoList) *App {
 	return v
 }
 
+// tmplData returns the data that is passed through to the template for the
+// view.
 func (v *App) tmplData() map[string]interface{} {
 	return map[string]interface{}{
 		"Todos": v.Todos,
@@ -48,6 +56,7 @@ func (v *App) tmplData() map[string]interface{} {
 	}
 }
 
+// Render renders the App view and satisfies the view.View interface.
 func (v *App) Render() error {
 	if err := v.tmpl.ExecuteEl(v.Element(), v.tmplData()); err != nil {
 		return err
@@ -60,17 +69,20 @@ func (v *App) Render() error {
 			return err
 		}
 	}
-	v.DelegateEvents()
+	v.delegateEvents()
 	return nil
 }
 
-func (v *App) DelegateEvents() {
+// delegateEvents adds all the needed event listeners to the view.
+func (v *App) delegateEvents() {
 	view.AddEventListener(v, "keypress", ".new-todo",
 		triggerOnKeyCode(enterKey, v.CreateTodo))
 	view.AddEventListener(v, "click", ".clear-completed", v.ClearCompleted)
 	view.AddEventListener(v, "click", ".toggle-all", v.ToggleAll)
 }
 
+// CreateTodo is an event listener which creates a new todo and adds it to the
+// todo list.
 func (v *App) CreateTodo(ev dom.Event) {
 	input, ok := ev.Target().(*dom.HTMLInputElement)
 	if !ok {
@@ -80,20 +92,20 @@ func (v *App) CreateTodo(ev dom.Event) {
 	document.QuerySelector(".new-todo").(dom.HTMLElement).Focus()
 }
 
+// ClearCompleted is an event listener which removes all the completed todos
+// from the list.
 func (v *App) ClearCompleted(ev dom.Event) {
 	v.Todos.ClearCompleted()
 }
 
+// ToggleAll toggles all the todos in the list.
 func (v *App) ToggleAll(ev dom.Event) {
-	input, ok := ev.Target().(*dom.HTMLInputElement)
-	if !ok {
-		panic("Could not convert event target to dom.HTMLInputElement")
-	}
-	for _, todo := range v.Todos.All() {
-		todo.SetCompleted(input.Checked)
-	}
+	v.Todos.ToggleAll()
 }
 
+// triggerOnKeyCode triggers the given event listener iff the keCode for the
+// event matches the given keyCode. It can be used to gain finer control over
+// which keys trigger a certain event.
 func triggerOnKeyCode(keyCode int, listener func(dom.Event)) func(dom.Event) {
 	return func(ev dom.Event) {
 		keyEvent, ok := ev.(*dom.KeyboardEvent)
@@ -103,25 +115,28 @@ func triggerOnKeyCode(keyCode int, listener func(dom.Event)) func(dom.Event) {
 	}
 }
 
-func addClass(el dom.Element, value string) {
-	newClasses := value
+// addClass adds class to the given element. It retains any other classes that
+// the element may have.
+func addClass(el dom.Element, class string) {
+	newClasses := class
 	if oldClasses := el.GetAttribute("class"); oldClasses != "" {
-		newClasses = oldClasses + " " + value
+		newClasses = oldClasses + " " + class
 	}
 	el.SetAttribute("class", newClasses)
 }
 
-func removeClass(el dom.Element, value string) {
+// removeClass removes the given class from the element it retains any other
+// classes that the element may have.
+func removeClass(el dom.Element, class string) {
 	oldClasses := el.GetAttribute("class")
-	if oldClasses == value {
-		fmt.Println("Only classes were the value itself")
+	if oldClasses == class {
 		// The only class present was the one we want to remove. Remove the class
 		// attribute entirely.
 		el.RemoveAttribute("class")
 	}
 	classList := strings.Split(oldClasses, " ")
-	for i, class := range classList {
-		if class == value {
+	for i, currentClass := range classList {
+		if currentClass == class {
 			newClassList := append(classList[:i], classList[i+1:]...)
 			el.SetAttribute("class", strings.Join(newClassList, " "))
 		}
