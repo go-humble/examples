@@ -48,9 +48,11 @@ your go code resides.
 
 To download and install this repository, run
 `go get github.com/go-humble/examples`, which will place the project in
-`$GOPATH/github.com/go-humble/examples` on your machine.
+`$GOPATH/src/github.com/go-humble/examples` on your machine.
 
-You will also need to install GopherJS with `go get github.com/gopherjs`.
+You will also need to install GopherJS with
+`go get -u github.com/gopherjs/gopherjs`. The `-u` flag gets the latest version,
+which is recommended.
 
 Then run `go generate ./...` to compile the templates and compile the go code
 to javascript.
