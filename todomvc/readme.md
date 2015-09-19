@@ -20,6 +20,11 @@
 *Let us [know](https://github.com/go-humble/humble/issues) if you discover anything worth sharing.*
 
 
+## Demo
+
+A [Live Demo](http://d3cqowlbjfdjrm.cloudfront.net/) of the application is
+available online.
+
 ## Implementation
 
 [GopherJS](https://github.com/gopherjs/gopherjs) compiles go to javascript code
