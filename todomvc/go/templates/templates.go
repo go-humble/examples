@@ -41,14 +41,14 @@ func init() {
 		panic(err)
 	}
 
-	if err = g.AddPartial("todo", `<li {{ if .Completed }}class="completed"{{ end }}>
+	if err = g.AddPartial("todo", `<!-- <li {{ if .Completed }}class="completed"{{ end }}> -->
 	<div class="view">
 		<input class="toggle" type="checkbox" {{ if .Completed }}checked{{ end }}>
 		<label>{{ .Title }}</label>
 		<button class="destroy"></button>
 	</div>
 	<input class="edit" value="{{ .Title }}">
-</li>`); err != nil {
+<!-- </li> -->`); err != nil {
 		panic(err)
 	}
 

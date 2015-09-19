@@ -64,6 +64,17 @@ func (v *App) Render() error {
 	listEl := v.Element().QuerySelector(".todo-list")
 	for _, todo := range v.Todos.Filter(v.predicate) {
 		todoView := NewTodo(todo)
+		// NOTE: the todomvc tests require that the top-level element for the
+		// todo view is an li element. Unfortunately there is no way to express
+		// this while also having template logic determine whether or not the
+		// li element should have the class "completed". I would prefer to have
+		// the top-level element for each todo be a div wrapper, and to include
+		// the li element inside the template. The workaround for now is to create
+		// the li element and set it's class manually.
+		todoView.SetElement(document.CreateElement("li"))
+		if todo.Completed() {
+			addClass(todoView.Element(), "completed")
+		}
 		view.AppendToEl(listEl, todoView)
 		if err := todoView.Render(); err != nil {
 			return err

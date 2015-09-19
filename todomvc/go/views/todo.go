@@ -63,9 +63,8 @@ func (v *Todo) Remove(ev dom.Event) {
 // Edit puts the Todo view into an editing state, changing it's appearance and
 // allowing it to be edited.
 func (v *Todo) Edit(ev dom.Event) {
-	li := v.Element().QuerySelector("li")
-	addClass(li, "editing")
-	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
+	addClass(v.Element(), "editing")
+	input, ok := v.Element().QuerySelector(".edit").(*dom.HTMLInputElement)
 	if !ok {
 		panic("Could not convert to dom.HTMLInputElement")
 	}
@@ -77,8 +76,7 @@ func (v *Todo) Edit(ev dom.Event) {
 // CommitEdit sets the title of the todo to the new title. After the edit has
 // been committed, the todo is no longer in the editing state.
 func (v *Todo) CommitEdit(ev dom.Event) {
-	li := v.Element().QuerySelector("li")
-	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
+	input, ok := v.Element().QuerySelector(".edit").(*dom.HTMLInputElement)
 	if !ok {
 		panic("Could not convert to dom.HTMLInputElement")
 	}
@@ -89,9 +87,8 @@ func (v *Todo) CommitEdit(ev dom.Event) {
 // the edit. After the edit has been canceled, the todo is no longer in the
 // editing state.
 func (v *Todo) CancelEdit(ev dom.Event) {
-	li := v.Element().QuerySelector("li")
-	removeClass(li, "editing")
-	input, ok := li.QuerySelector(".edit").(*dom.HTMLInputElement)
+	removeClass(v.Element(), "editing")
+	input, ok := v.Element().QuerySelector(".edit").(*dom.HTMLInputElement)
 	if !ok {
 		panic("Could not convert to dom.HTMLInputElement")
 	}
