@@ -1,6 +1,8 @@
 package views
 
 import (
+	"strings"
+
 	"github.com/go-humble/examples/todomvc/go/models"
 	"github.com/go-humble/examples/todomvc/go/templates"
 	"github.com/go-humble/temple/temple"
@@ -80,7 +82,14 @@ func (v *Todo) CommitEdit(ev dom.Event) {
 	if !ok {
 		panic("Could not convert to dom.HTMLInputElement")
 	}
-	v.Model.SetTitle(input.Value)
+	newTitle := strings.TrimSpace(input.Value)
+	// If the newTitle is an empty string, delete the todo. Otherwise set the
+	// new title.
+	if newTitle != "" {
+		v.Model.SetTitle(newTitle)
+	} else {
+		v.Model.Remove()
+	}
 }
 
 // CancelEdit resets the title of the todo to its old value. It does not commit

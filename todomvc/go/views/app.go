@@ -99,7 +99,7 @@ func (v *App) CreateTodo(ev dom.Event) {
 	if !ok {
 		panic("Could not convert event target to dom.HTMLInputElement")
 	}
-	v.Todos.AddTodo(input.Value)
+	v.Todos.AddTodo(strings.TrimSpace(input.Value))
 	document.QuerySelector(".new-todo").(dom.HTMLElement).Focus()
 }
 

@@ -35,9 +35,11 @@ func init() {
 		<a {{ if eq .Path "#/completed"}} class="selected" {{ end }} href="#/completed">Completed</a>
 	</li>
 </ul>
-{{ if len .Todos.Completed}}
-<button class="clear-completed">Clear completed</button>
-{{ end }}`); err != nil {
+
+<button class="clear-completed {{ if eq (len .Todos.Completed) 0}}hidden{{ end }}">
+	Clear completed
+</button>
+`); err != nil {
 		panic(err)
 	}
 
