@@ -57,6 +57,6 @@ func (list *TodoList) ClearCompleted() {
 }
 
 func (list *TodoList) DeleteById(id string) {
-	list.todos = list.Filter(invert(todoById(id)))
+	list.todos = list.Filter(todoNotById(id))
 	list.changed()
 }

@@ -60,3 +60,9 @@ func todoById(id string) Predicate {
 		return t.id == id
 	}
 }
+
+// todoNotById returns a predicate which is true iff todo.id does not equal
+// the given id.
+func todoNotById(id string) Predicate {
+	return invert(todoById(id))
+}
