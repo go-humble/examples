@@ -55,8 +55,8 @@ You will also need to install GopherJS with `go get github.com/gopherjs`.
 Then run `go generate ./...` to compile the templates and compile the go code
 to javascript.
 
-Finally, serve the project directory with `python -m SimpleHTTPServer` or similar
-and visit [localhost:8000](http://localhost:8000) in your browser.
+Finally, serve the project directory with `go run serve.go` and visit
+[localhost:8000](http://localhost:8000) in your browser.
 
 
 ## Credit
