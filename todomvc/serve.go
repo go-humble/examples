@@ -1,3 +1,5 @@
+// +build ignore
+
 package main
 
 import (
@@ -6,7 +8,7 @@ import (
 )
 
 func main() {
-	port := ":8000"
-	log.Println("Serving on http://localhost" + port)
-	http.ListenAndServe(port, http.FileServer(http.Dir(".")))
+	addr := "localhost:8000"
+	log.Println("Serving on http://" + addr)
+	log.Fatal(http.ListenAndServe(addr, http.FileServer(http.Dir("."))))
 }
