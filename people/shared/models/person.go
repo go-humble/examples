@@ -8,15 +8,16 @@ import (
 )
 
 var (
-	People *zoom.ModelType
+	People *zoom.Collection
 	pool   *zoom.Pool
 )
 
 func init() {
 	if detect.IsServer() {
-		pool = zoom.NewPool(nil)
+		pool = zoom.NewPool("localhost:6379")
 		var err error
-		People, err = pool.Register(&Person{})
+		colOptions := zoom.DefaultCollectionOptions.WithIndex(true)
+		People, err = pool.NewCollectionWithOptions(&Person{}, colOptions)
 		if err != nil {
 			log.Fatal(err)
 		}
